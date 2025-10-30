@@ -4,6 +4,8 @@ def euclide_etendu(a, b):
     """
     Calcule le PGCD(a, b) et les coefficients (u, v)
     tels que : a*u + b*v = PGCD(a, b)
+    
+    Cette fonction implémente l'algorithme d'Euclide étendu
     """
     print(f"\nCalcul du PGCD étendu de {a} et {b} :")
     
@@ -40,3 +42,4 @@ y = int(input("Entrez le deuxième nombre (Y) : "))
 pgcd, u, v = euclide_etendu(x, y)
 print(f"\nRésultat final : PGCD({x}, {y}) = {pgcd}")
 print(f"→ Solution de l'équation : {x}*({u}) + {y}*({v}) = {pgcd}")
+
