@@ -1,43 +1,92 @@
 
-
 def euclide_etendu(a, b):
     """
     Calcule le PGCD(a, b) et les coefficients (u, v)
     tels que : a*u + b*v = PGCD(a, b)
+    Affiche les étapes de l’algorithme d’Euclide et de la remontée.
     """
-    print(f"\nCalcul du PGCD étendu de {a} et {b} :")
-    
-    # Étape 1 : Initialisation
-    u1, v1, u2, v2 = 1, 0, 0, 1  # coefficients initiaux
 
+    print("\n=== Algorithme d’Euclide Étendu ===")
+    print(f"Objectif : Trouver PGCD({a}, {b}) et (u, v) tels que {a}u + {b}v = PGCD({a}, {b})\n")
+
+    # Étape 1 : Algorithme d’Euclide classique
+    etapes = []
+    A, B = a, b
     while b != 0:
-        q = a // b      # quotient
-        r = a % b       # reste
-        print(f"{a} = {b} * ({q}) + {r}")
-
-        # Mise à jour des variables
+        q = a // b
+        r = a % b
+        etapes.append((a, b, q, r))
+        print(f"{a} = {b} × {q} + {r}")
         a, b = b, r
-        u1, u2 = u2, u1 - q * u2
-        v1, v2 = v2, v1 - q * v2
 
-    print(f"\n➡️ PGCD = {a}")
-    print(f"➡️ Coefficients : u = {u1}, v = {v1}")
-    print(f"Vérification : ({u1})*X + ({v1})*Y = {a}")
-    
-    # Vérifier si les deux nombres sont premiers entre eux
-    if a == 1:
-        print("✅ Les deux nombres sont premiers entre eux.")
+    d = a  # PGCD
+    print(f"\n➡️ PGCD({A}, {B}) = {d}\n")
+
+    # Étape 2 : Remontée de l’algorithme (calcul de u et v)
+    print("=== Étapes de la remontée (calcul de u et v) ===\n")
+
+    u1, v1 = 1, 0
+    u2, v2 = 0, 1
+
+    for i, (a_i, b_i, q_i, r_i) in enumerate(etapes):
+        u1, u2 = u2, u1 - q_i * u2
+        v1, v2 = v2, v1 - q_i * v2
+        print(f"Étape {i+1}: q = {q_i} → u = {u1}, v = {v1}")
+
+    u, v = u1, v1
+    print(f"\n➡️ Coefficients de Bézout : u = {u}, v = {v}")
+    print(f"➡️ Vérification : {A}*({u}) + {B}*({v}) = {A*u + B*v}")
+
+    # Vérification de la relation
+    if A * u + B * v == d:
+        print("✅ Relation vérifiée : a*u + b*v = PGCD(a,b)\n")
     else:
-        print("ℹ️ Les deux nombres ne sont pas premiers entre eux.")
+        print("❌ Relation non vérifiée.\n")
 
-    return a, u1, v1
+    return d, u, v
+
+
+def resoudre_diophantienne(a, b, c):
+    """
+    Résout l’équation diophantienne ax + by = c.
+    Utilise l’algorithme d’Euclide étendu pour trouver les solutions.
+    """
+
+    print("\n=== Résolution de l’équation diophantienne ===")
+    print(f"Équation : {a}x + {b}y = {c}")
+
+    # Étape 1 : Calcul du PGCD et coefficients de Bézout
+    d, u, v = euclide_etendu(a, b)
+
+    # Étape 2 : Vérifier l’existence de solutions
+    if c % d != 0:
+        print(f"❌ Pas de solution entière car {d} ne divise pas {c}.")
+        return
+    else:
+        print(f"✅ Il existe des solutions entières car {d} divise {c}.\n")
+
+    # Étape 3 : Calcul d'une solution particulière
+    k = c // d
+    x_p = u * k
+    y_p = v * k
+
+    print(f"➡️ Solution particulière : (xₚ, yₚ) = ({x_p}, {y_p})")
+    print(f"Vérification : {a}*({x_p}) + {b}*({y_p}) = {a*x_p + b*y_p} = {c}")
+
+    # Étape 4 : Écriture de la solution générale
+    alpha = b // d
+    beta = -a // d
+    print("\n=== Solution générale ===")
+    print(f"(x, y) = ({x_p} + {alpha}k, {y_p} + {beta}k), k ∈ ℤ")
+
+    print("\n✅ Résolution complète terminée.")
 
 
 # --- Programme principal ---
-x = int(input("Entrez le premier nombre (X) : "))
-y = int(input("Entrez le deuxième nombre (Y) : "))
+print("=== TP : Équations diophantiennes linéaires ===")
+a = int(input("Entrez la valeur de a : "))
+b = int(input("Entrez la valeur de b : "))
+c = int(input("Entrez la valeur de c : "))
 
-pgcd, u, v = euclide_etendu(x, y)
-print(f"\nRésultat final : PGCD({x}, {y}) = {pgcd}")
-print(f"→ Solution de l'équation : {x}*({u}) + {y}*({v}) = {pgcd}")
+resoudre_diophantienne(a, b, c)
 
